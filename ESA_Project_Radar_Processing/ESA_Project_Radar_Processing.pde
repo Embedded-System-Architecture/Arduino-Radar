@@ -134,7 +134,7 @@ void drawText() { // draws the texts on the screen
   text("Angle: " + iAngle +" °", width-width*0.48, height-height*0.0277);
   text("Distance: ", width-width*0.26, height-height*0.0277);
   if(iDistance<40) {
-  text("        " + iDistance +" cm", width-width*0.225, height-height*0.0277);
+  text("        " + iDistance +" cm", width-width*0.15, height-height*0.0277);
   }
   textSize(25);
   fill(98,245,60);
