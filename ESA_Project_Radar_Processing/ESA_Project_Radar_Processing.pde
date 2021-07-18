@@ -1,12 +1,9 @@
 /*   Arduino Radar Project
- *
- *   Updated version. Fits any screen resolution!
- *   Just change the values in the size() function,
- *   with your screen resolution.
- *      
- *  by Dejan Nedelkovski, 
- *  www.HowToMechatronics.com
  *  
+ *   Modify by Zhaoran Wang 
+ *   from Dejan Nedelkovski 
+ *   at www.HowToMechatronics.com
+ *   
  */
 
 import processing.serial.*; // imports library for serial communication
@@ -29,7 +26,7 @@ float time = 0;
 
 void setup() {
   
- size (1280, 720); // ***CHANGE THIS TO YOUR SCREEN RESOLUTION***
+ size (1440, 1080); // ***CHANGE THIS TO YOUR SCREEN RESOLUTION***
  smooth();
  myPort = new Serial(this,"COM7", 9600); // starts the serial communication
  myPort.bufferUntil('.'); // reads the data from the serial port up to the character '.'. So actually it reads this: angle,distance.
@@ -42,33 +39,16 @@ void draw() {
   textFont(orcFont);
   // simulating motion blur and slow fade of the moving line
   noStroke();
-  fill(0,4); 
+  fill(0,4);
   rect(0, 0, width, height-height*0.065); 
   
   fill(98,245,31); // green color
   // calls the functions for drawing the radar
-  drawRadar(); 
+  drawRadar();
   drawLine();
   drawText();
   drawCircle();
-  //drawObject();
-  //pixsDistance = iDistance*((height-height*0.1666)*0.025);
-  //for(int i = 0; i < position.size(); i +=2)
-  //{
-  //  drawCircle(position.get(i), position.get(i+1));
-  //}
-  //if(iDistance<40){
-  //  position.append(pixsDistance*cos(radians(iAngle)));
-  //  //position.append(iAngle);
-  //  position.append(-pixsDistance*sin(radians(iAngle)));
-  //}
-  //drawCircle(position.get(0), position.get(1));
-  //print(position.get(0), position.get(1));
-  //print(position.size(), " ");
-  //print(position.get(0), position.get(0));
-  
-  //println("Exiting at " + millis()/1000.0 + " seconds");
-  if(iAngle == 15.0 || iAngle == 165.0)
+  if(iAngle == 0 || iAngle == 360)
   {
     position.clear();
   }
@@ -90,25 +70,19 @@ void serialEvent (Serial myPort) { // starts reading data from the Serial Port
 
 void drawCircle(){
   pushMatrix();
-  translate(width/2,height-height*0.074); // moves the starting coordinats to new location
+  translate(width/2,height-height*0.53); // moves the starting coordinats to new location
   strokeWeight(9);
   stroke(255,10,10); // red color
-  pixsDistance = iDistance*((height-height*0.1666)*0.025); // covers the distance from the sensor from cm to pixels
+  pixsDistance = iDistance*((height-height*0.1666)*0.0155); // covers the distance from the sensor from cm to pixels
   // limiting the range to 40 cms
   if(iDistance < 40){
     position.append(pixsDistance*cos(radians(iAngle)));
-    //position.append(iAngle);
     position.append(-pixsDistance*sin(radians(iAngle)));
-    
-    //fill(255, 0, 0);
-    //circle(x, y, 20.0);
-    // draws the object according to the angle and the distance
-    // line(pixsDistance*cos(radians(iAngle)),-pixsDistance*sin(radians(iAngle)),(width-width*0.505)*cos(radians(iAngle)),-(width-width*0.505)*sin(radians(iAngle)));
-  }
+    }
   for(int i = 0; i < position.size(); i += 2)
     {
       fill(255, 0, 0);
-      circle(position.get(i), position.get(i+1), 20);
+      circle(position.get(i), position.get(i+1), 10);
     }
   popMatrix();
   
@@ -116,23 +90,38 @@ void drawCircle(){
 
 void drawRadar() {
   pushMatrix();
-  translate(width/2,height-height*0.074); // moves the starting coordinats to new location
+  translate(width/2,height-height*0.53); // moves the starting coordinats to new location
   noFill();
   strokeWeight(2);
   stroke(98,245,31);
   // draws the arc lines
-  arc(0,0,(width-width*0.0625),(width-width*0.0625),PI,TWO_PI);
-  arc(0,0,(width-width*0.27),(width-width*0.27),PI,TWO_PI);
-  arc(0,0,(width-width*0.479),(width-width*0.479),PI,TWO_PI);
-  arc(0,0,(width-width*0.687),(width-width*0.687),PI,TWO_PI);
+  
+  arc(0,0,(width-width*0.40),(width-width*0.40),0,PI);
+  arc(0,0,(width-width*0.55),(width-width*0.55),0,PI);
+  arc(0,0,(width-width*0.70),(width-width*0.70),0,PI);
+  arc(0,0,(width-width*0.85),(width-width*0.85),0,PI);
+  
+  arc(0,0,(width-width*0.40),(width-width*0.40),PI,TWO_PI);
+  arc(0,0,(width-width*0.55),(width-width*0.55),PI,TWO_PI);
+  arc(0,0,(width-width*0.70),(width-width*0.70),PI,TWO_PI);
+  arc(0,0,(width-width*0.85),(width-width*0.85),PI,TWO_PI);
   // draws the angle lines
-  line(-width/2,0,width/2,0);
-  line(0,0,(-width/2)*cos(radians(30)),(-width/2)*sin(radians(30)));
-  line(0,0,(-width/2)*cos(radians(60)),(-width/2)*sin(radians(60)));
-  line(0,0,(-width/2)*cos(radians(90)),(-width/2)*sin(radians(90)));
-  line(0,0,(-width/2)*cos(radians(120)),(-width/2)*sin(radians(120)));
-  line(0,0,(-width/2)*cos(radians(150)),(-width/2)*sin(radians(150)));
-  line((-width/2)*cos(radians(30)),0,width/2,0);
+  line(-width/3,0,width/3,0);
+  line(0,0,(-width/3.2)*cos(radians(30)),(-width/3.2)*sin(radians(30)));
+  line(0,0,(-width/3.2)*cos(radians(60)),(-width/3.2)*sin(radians(60)));
+  line(0,0,(-width/3.2)*cos(radians(90)),(-width/3.2)*sin(radians(90)));
+  line(0,0,(-width/3.2)*cos(radians(120)),(-width/3.2)*sin(radians(120)));
+  line(0,0,(-width/3.2)*cos(radians(150)),(-width/3.2)*sin(radians(150)));
+  line((-width/3)*cos(radians(30)),0,width/3,0);
+  
+  //line(-width/2,0,width/2,0);
+  line(0,0,(-width/3.2)*cos(radians(210)),(-width/3.2)*sin(radians(210)));
+  line(0,0,(-width/3.2)*cos(radians(240)),(-width/3.2)*sin(radians(240)));
+  line(0,0,(-width/3.2)*cos(radians(270)),(-width/3.2)*sin(radians(270)));
+  line(0,0,(-width/3.2)*cos(radians(300)),(-width/3.2)*sin(radians(300)));
+  line(0,0,(-width/3.2)*cos(radians(330)),(-width/3.2)*sin(radians(330)));
+  //line((-width/2)*cos(radians(30)),0,width/2,0);
+  
   popMatrix();
 }
 
@@ -144,83 +133,70 @@ void drawObject() {
   pixsDistance = iDistance*((height-height*0.1666)*0.025); // covers the distance from the sensor from cm to pixels
   // limiting the range to 40 cms
   if(iDistance<40){
-    // draws the object according to the angle and the distance
+  // draws the object according to the angle and the distance
   line(pixsDistance*cos(radians(iAngle)),-pixsDistance*sin(radians(iAngle)),(width-width*0.505)*cos(radians(iAngle)),-(width-width*0.505)*sin(radians(iAngle)));
   }
   popMatrix();
 }
 
-//void drawObject() {
-//  pushMatrix();
-//  translate(width/2,height-height*0.074); // moves the starting coordinats to new location
-//  strokeWeight(9);
-//  stroke(255, 0, 0); // red color
-//  pixsDistance = iDistance*((height-height*0.1666)*0.025); // covers the distance from the sensor from cm to pixels
-//  // limiting the range to 40 cms
-//  if(iDistance<40){
-//    //fill(255, 0, 0);
-//    //circle(pixsDistance*cos(radians(iAngle)),-pixsDistance*sin(radians(iAngle)),20.0);
-//     //draws the object according to the angle and the distance
-//  line(pixsDistance*cos(radians(iAngle)),-pixsDistance*sin(radians(iAngle)),(width-width*0.505)*cos(radians(iAngle)),-(width-width*0.505)*sin(radians(iAngle)));
-//  }
-//  popMatrix();
-//}
-
 void drawLine() {
   pushMatrix();
   strokeWeight(9);
   stroke(30,250,60);
-  translate(width/2,height-height*0.074); // moves the starting coordinats to new location
-  line(0,0,(height-height*0.12)*cos(radians(iAngle)),-(height-height*0.12)*sin(radians(iAngle))); // draws the line according to the angle
+  translate(width/2,height-height*0.53); // moves the starting coordinats to new location
+  line(0,0,(height-height*0.49)*cos(radians(iAngle)),-(height-height*0.55)*sin(radians(iAngle))); // draws the line according to the angle
   popMatrix();
 }
 
 void drawText() { // draws the texts on the screen
   
   pushMatrix();
-  if(iDistance>40) {
-  noObject = "Out of Range";
-  }
-  else {
-  noObject = "In Range";
-  }
   fill(0,0,0);
   noStroke();
   rect(0, height-height*0.0648, width, height);
   fill(98,245,31);
   textSize(25);
-  
-  text("10cm",width-width*0.3854,height-height*0.0833);
-  text("20cm",width-width*0.281,height-height*0.0833);
-  text("30cm",width-width*0.177,height-height*0.0833);
-  text("40cm",width-width*0.0729,height-height*0.0833);
-  textSize(40);
-  text("Object: " + noObject, width-width*0.875, height-height*0.0277);
-  text("Angle: " + iAngle +" °", width-width*0.48, height-height*0.0277);
-  text("Distance: ", width-width*0.26, height-height*0.0277);
-  if(iDistance<40) {
-  text("        " + iDistance +" cm", width-width*0.15, height-height*0.0277);
-  }
-  textSize(25);
   fill(98,245,60);
-  translate((width-width*0.4994)+width/2*cos(radians(30)),(height-height*0.0907)-width/2*sin(radians(30)));
-  rotate(-radians(-60));
-  text("30°",0,0);
+  translate(width-width * 0.153,height-height*0.526);
+  //translate((width-width*0.4994)+width/2*cos(radians(30)),(height-height*0.0907)-width/2*sin(radians(30)));
+  rotate(-radians(-90));
+  text("0°",0,0);
   resetMatrix();
-  translate((width-width*0.503)+width/2*cos(radians(60)),(height-height*0.0888)-width/2*sin(radians(60)));
-  rotate(-radians(-30));
-  text("60°",0,0);
-  resetMatrix();
-  translate((width-width*0.507)+width/2*cos(radians(90)),(height-height*0.0833)-width/2*sin(radians(90)));
+  
+  //translate((width-width*0.656)+width/2*cos(radians(30)),(height-height*0.419)-width/2*sin(radians(30)));
+  //rotate(-radians(-60));
+  //text("30°",0,0);
+  //resetMatrix();
+  
+  //translate((width-width*0.593)+width/2*cos(radians(60)),(height-height*0.3303)-width/2*sin(radians(60)));
+  //rotate(-radians(-30));
+  //text("60°",0,0);
+  //resetMatrix();
+  
+  translate((width-width*0.510)+width/2*cos(radians(90)),(height-height*0.2883)-width/2*sin(radians(90)));
   rotate(radians(0));
   text("90°",0,0);
   resetMatrix();
-  translate(width-width*0.513+width/2*cos(radians(120)),(height-height*0.07129)-width/2*sin(radians(120)));
-  rotate(radians(-30));
-  text("120°",0,0);
+  
+  //translate(width-width*0.422+width/2*cos(radians(120)),(height-height*0.3163)-width/2*sin(radians(120)));
+  //rotate(radians(-30));
+  //text("120°",0,0);
+  //resetMatrix();
+  
+  //translate((width-width*0.3493)+width/2*cos(radians(150)),(height-height*0.3923)-width/2*sin(radians(150)));
+  //rotate(radians(-60));
+  //text("150°",0,0);
+  //resetMatrix();
+  
+  translate(width-width * 0.842,height-height*0.510);
+  //translate((width-width*0.4994)+width/2*cos(radians(30)),(height-height*0.0907)-width/2*sin(radians(30)));
+  rotate(-radians(90));
+  text("180°",0,0);
   resetMatrix();
-  translate((width-width*0.5104)+width/2*cos(radians(150)),(height-height*0.0574)-width/2*sin(radians(150)));
-  rotate(radians(-60));
-  text("150°",0,0);
+  
+  translate((width-width*0.510)+width/2*cos(radians(90)),(height-height*0.0883));
+  rotate(radians(0));
+  text("270°",0,0);
   popMatrix(); 
+  
 }
