@@ -24,6 +24,8 @@ int iAngle, iDistance;
 int index1=0;
 int index2=0;
 PFont orcFont;
+FloatList position = new FloatList();
+float time = 0;
 
 void setup() {
   
@@ -47,8 +49,29 @@ void draw() {
   // calls the functions for drawing the radar
   drawRadar(); 
   drawLine();
-  drawObject();
   drawText();
+  drawCircle();
+  //drawObject();
+  //pixsDistance = iDistance*((height-height*0.1666)*0.025);
+  //for(int i = 0; i < position.size(); i +=2)
+  //{
+  //  drawCircle(position.get(i), position.get(i+1));
+  //}
+  //if(iDistance<40){
+  //  position.append(pixsDistance*cos(radians(iAngle)));
+  //  //position.append(iAngle);
+  //  position.append(-pixsDistance*sin(radians(iAngle)));
+  //}
+  //drawCircle(position.get(0), position.get(1));
+  //print(position.get(0), position.get(1));
+  //print(position.size(), " ");
+  //print(position.get(0), position.get(0));
+  
+  //println("Exiting at " + millis()/1000.0 + " seconds");
+  if(iAngle == 15.0 || iAngle == 165.0)
+  {
+    position.clear();
+  }
 }
 
 void serialEvent (Serial myPort) { // starts reading data from the Serial Port
@@ -63,6 +86,32 @@ void serialEvent (Serial myPort) { // starts reading data from the Serial Port
   // converts the String variables into Integer
   iAngle = int(angle);
   iDistance = int(distance);
+}
+
+void drawCircle(){
+  pushMatrix();
+  translate(width/2,height-height*0.074); // moves the starting coordinats to new location
+  strokeWeight(9);
+  stroke(255,10,10); // red color
+  pixsDistance = iDistance*((height-height*0.1666)*0.025); // covers the distance from the sensor from cm to pixels
+  // limiting the range to 40 cms
+  if(iDistance < 40){
+    position.append(pixsDistance*cos(radians(iAngle)));
+    //position.append(iAngle);
+    position.append(-pixsDistance*sin(radians(iAngle)));
+    
+    //fill(255, 0, 0);
+    //circle(x, y, 20.0);
+    // draws the object according to the angle and the distance
+    // line(pixsDistance*cos(radians(iAngle)),-pixsDistance*sin(radians(iAngle)),(width-width*0.505)*cos(radians(iAngle)),-(width-width*0.505)*sin(radians(iAngle)));
+  }
+  for(int i = 0; i < position.size(); i += 2)
+    {
+      fill(255, 0, 0);
+      circle(position.get(i), position.get(i+1), 20);
+    }
+  popMatrix();
+  
 }
 
 void drawRadar() {
@@ -100,6 +149,22 @@ void drawObject() {
   }
   popMatrix();
 }
+
+//void drawObject() {
+//  pushMatrix();
+//  translate(width/2,height-height*0.074); // moves the starting coordinats to new location
+//  strokeWeight(9);
+//  stroke(255, 0, 0); // red color
+//  pixsDistance = iDistance*((height-height*0.1666)*0.025); // covers the distance from the sensor from cm to pixels
+//  // limiting the range to 40 cms
+//  if(iDistance<40){
+//    //fill(255, 0, 0);
+//    //circle(pixsDistance*cos(radians(iAngle)),-pixsDistance*sin(radians(iAngle)),20.0);
+//     //draws the object according to the angle and the distance
+//  line(pixsDistance*cos(radians(iAngle)),-pixsDistance*sin(radians(iAngle)),(width-width*0.505)*cos(radians(iAngle)),-(width-width*0.505)*sin(radians(iAngle)));
+//  }
+//  popMatrix();
+//}
 
 void drawLine() {
   pushMatrix();
